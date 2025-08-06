@@ -1,0 +1,52 @@
+{
+  "name": "ipfs-hls-player",
+  "version": "1.0.0",
+  "description": "Video.js-based HLS player optimized for IPFS content-addressed storage",
+  "main": "dist/ipfs-hls-player.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ipfs",
+    "hls",
+    "video",
+    "player",
+    "videojs",
+    "streaming",
+    "m3u8",
+    "decentralized",
+    "web3"
+  ],
+  "author": "Mark Giles",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ipfs-hls-player.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ipfs-hls-player/issues"
+  },
+  "homepage": "https://github.com/yourusername/ipfs-hls-player#readme",
+  "dependencies": {
+    "video.js": "^8.10.0",
+    "videojs-hls-quality-selector": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-loader": "^9.1.3",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "css/",
+    "README.md",
+    "LICENSE"
+  ]
+}

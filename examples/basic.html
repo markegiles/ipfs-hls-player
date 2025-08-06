@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS HLS Player - Basic Example</title>
+    
+    <!-- IPFS HLS Player CSS -->
+    <link rel="stylesheet" href="../css/ipfs-hls-player.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .video-container {
+            background: #000;
+            overflow: hidden;
+            max-width: 800px;  /* Apply width constraints to container, not video */
+            margin: 0 auto;    /* Center the constrained container */
+        }
+        .controls {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>IPFS HLS Player - Basic Example</h1>
+    
+    <div style="background: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+        <strong>Note:</strong> Some browsers restrict local file access. For best results, serve this example from a local web server.
+    </div>
+    
+    <div class="video-container">
+        <!-- Video will be created dynamically -->
+    </div>
+    
+    <div class="controls">
+        <h3>Load IPFS HLS Stream</h3>
+        <input type="text" id="stream-url" placeholder="Enter IPFS HLS URL (e.g., https://gateway.ipfs.io/ipfs/QmHash/playlist.m3u8)" />
+        <button onclick="loadStream().catch(console.error)">Load Stream</button>
+        <button onclick="destroyPlayer()">Destroy Player</button>
+        
+        <h3>Sample Streams</h3>
+        <button onclick="loadSample('bunny')">Big Buck Bunny</button>
+        <button onclick="loadSample('tears')">Tears of Steel</button>
+        <button onclick="loadSample('spk')">SPK HLS</button>
+    </div>
+    
+    <!-- IPFS HLS Player Bundle -->
+    <script src="../dist/ipfs-hls-player.js"></script>
+    
+    <script>
+        // Make sure IPFSHLSPlayer is accessible from the bundle
+        const IPFSHLSPlayer = window.IPFSHLSPlayer || window.IPFSHLSPlayerBundle?.IPFSHLSPlayer;
+        if (!IPFSHLSPlayer) {
+            console.error('IPFSHLSPlayer not found! Check if the bundle loaded correctly.');
+        }
+        
+        let player = null;
+        
+        // Sample IPFS HLS streams (replace with actual IPFS URLs)
+        const sampleStreams = {
+            bunny: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+            tears: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+            spk: 'https://ipfs.dlux.io/ipfs/QmUNdEsqve1v8suh3AG4MjYbsJTVfdh3uWxoeoxJxaTWG7'
+        };
+        
+        // Helper function to create a player with a source
+        async function createPlayer(url) {
+            const container = document.querySelector('.video-container');
+            
+            // Destroy existing player if any
+            if (player) {
+                console.log('Destroying existing player');
+                IPFSHLSPlayer.destroyPlayer(document.getElementById('my-video'));
+                player = null;
+            }
+            
+            // Clear container completely
+            container.innerHTML = '';
+            
+            // Create fresh video element
+            const video = document.createElement('video');
+            video.id = 'my-video';
+            video.style.width = '100%';
+            container.appendChild(video);
+            
+            try {
+                // Initialize player with source
+                player = await IPFSHLSPlayer.initializePlayer(video, {
+                    src: url,
+                    type: 'application/x-mpegURL',
+                    controls: true,
+                    fluid: true
+                });
+                
+                console.log('Player created with stream:', url);
+                return player;
+            } catch (error) {
+                console.error('Failed to create player:', error);
+                throw error;
+            }
+        }
+        
+        // Initialize player on page load with a default source
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await createPlayer('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
+                console.log('IPFS HLS Player initialized successfully with default stream');
+            } catch (error) {
+                console.error('Failed to initialize IPFS HLS Player:', error);
+            }
+        });
+        
+        async function loadStream() {
+            let url = document.getElementById('stream-url').value;
+            
+            if (!url) {
+                alert('Please enter a stream URL');
+                return;
+            }
+            
+            // Add https:// if no protocol is specified
+            if (!url.match(/^https?:\/\//)) {
+                url = 'https://' + url;
+                document.getElementById('stream-url').value = url;
+            }
+            
+            try {
+                await createPlayer(url);
+                player.play();
+            } catch (error) {
+                console.error('Failed to load stream:', error);
+                alert('Failed to load stream: ' + error.message);
+            }
+        }
+        
+        function loadSample(name) {
+            const url = sampleStreams[name];
+            if (url) {
+                document.getElementById('stream-url').value = url;
+                loadStream();
+            }
+        }
+        
+        function destroyPlayer() {
+            if (player) {
+                IPFSHLSPlayer.destroyPlayer(document.getElementById('my-video'));
+                player = null;
+                console.log('Player destroyed');
+            } else {
+                console.log('No player to destroy');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Mark
+Copyright (c) 2025 Mark Giles
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## Third-Party Licenses and Attributions
+
+This software includes or is built upon the following open-source projects:
+
+### Video.js
+Copyright (c) Brightcove, Inc.
+License: Apache-2.0
+https://github.com/videojs/video.js
+
+### videojs-hls-quality-selector
+Copyright (c) Chris Boustead
+License: MIT
+https://github.com/chrisboustead/videojs-hls-quality-selector
+
+These components are used under their respective licenses. Please refer to their individual project pages for full license details.
