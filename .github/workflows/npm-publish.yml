@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Publish to NPM and Release Assets
 
 on:
   release:
@@ -20,8 +20,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build all versions
         run: npm run build
+
+      - name: Create release archive
+        run: |
+          mkdir -p release-assets
+          cp dist/*.js release-assets/
+          cp dist/*.js.map release-assets/ 2>/dev/null || true
+          cp css/*.css release-assets/
+          cd release-assets
+          tar -czf ../ipfs-hls-player-${{ github.event.release.tag_name }}.tar.gz *
+          cd ..
+
+      - name: Upload built files to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/ipfs-hls-player.js
+            dist/ipfs-hls-player.min.js
+            dist/ipfs-hls-player.esm.js
+            dist/ipfs-hls-player.js.map
+            css/ipfs-hls-player.css
+            ipfs-hls-player-${{ github.event.release.tag_name }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to NPM
         run: npm publish

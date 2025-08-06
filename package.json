@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Video.js-based HLS player optimized for IPFS content-addressed storage",
   "main": "dist/ipfs-hls-player.js",
+  "module": "dist/ipfs-hls-player.esm.js",
+  "unpkg": "dist/ipfs-hls-player.min.js",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development --watch",
@@ -23,12 +25,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/ipfs-hls-player.git"
+    "url": "https://github.com/markegiles/ipfs-hls-player.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/ipfs-hls-player/issues"
+    "url": "https://github.com/markegiles/ipfs-hls-player/issues"
   },
-  "homepage": "https://github.com/yourusername/ipfs-hls-player#readme",
+  "homepage": "https://github.com/markegiles/ipfs-hls-player#readme",
   "dependencies": {
     "video.js": "^8.10.0",
     "videojs-hls-quality-selector": "^2.0.0"
