@@ -25,7 +25,7 @@ https://gateway.ipfs.io/ipfs/QmSegmentHash123
 2. The M3U8 playlist is rewritten to replace relative paths with absolute IPFS gateway URLs
 3. The modified playlist gets its own CID
 4. All segments and playlists are uploaded to IPFS
-4. You play the video using the playlist's CID: `https://gateway.ipfs.io/ipfs/QmPlaylistHash`
+5. You play the video using the playlist's CID: `https://gateway.ipfs.io/ipfs/QmPlaylistHash`
 
 This player is optimized to play these IPFS-hosted HLS streams.
 
@@ -39,12 +39,12 @@ This player is optimized to play these IPFS-hosted HLS streams.
 
 ## Features
 
-- 🎯 **IPFS-Optimized**: Pre-configured for IPFS-hosted HLS streams
-- 🎮 **Quality Selector**: Manual quality selection UI for HLS streams
-- 🔄 **Auto-Enhancement**: Automatically upgrades video elements
-- 📱 **Responsive**: Mobile-friendly controls and layouts
-- 🎨 **Customizable**: Clean styling with CSS variables
-- 🔧 **Vue Integration**: Optional Vue.js mixin included
+- **IPFS-Optimized**: Pre-configured for IPFS-hosted HLS streams
+- **Quality Selector**: Manual quality selection UI for HLS streams
+- **Auto-Enhancement**: Automatically upgrades video elements
+- **Responsive**: Mobile-friendly controls and layouts
+- **Customizable**: Clean styling with CSS variables
+- **Vue Integration**: Optional Vue.js mixin included
 
 ## Installation
 
@@ -58,8 +58,8 @@ npm install ipfs-hls-player
 <!-- CSS -->
 <link rel="stylesheet" href="https://unpkg.com/ipfs-hls-player/css/ipfs-hls-player.css">
 
-<!-- JavaScript -->
-<script src="https://unpkg.com/ipfs-hls-player/dist/ipfs-hls-player.js"></script>
+<!-- JavaScript (minified for production) -->
+<script src="https://unpkg.com/ipfs-hls-player/dist/ipfs-hls-player.min.js"></script>
 ```
 
 ## Usage
@@ -114,6 +114,30 @@ export default {
 }
 ```
 
+### CSS Class Configuration
+
+The player allows customization of which CSS classes are applied to video elements:
+
+```javascript
+// Customize CSS classes for specific styling needs
+IPFSHLSPlayer.initializePlayer(video, {
+  src: 'https://ipfs.io/ipfs/QmYourPlaylistCID',
+  cssClasses: {
+    // Required classes (always applied)
+    required: ['video-js', 'vjs-default-skin'],
+    // Optional classes (applied by default, can be overridden)
+    optional: ['vjs-big-play-centered', 'vjs-fluid'],
+    // Custom classes for your application
+    custom: ['my-custom-class', 'theme-dark']
+  }
+});
+```
+
+This is useful when:
+- Integrating with existing styling systems
+- Preventing conflicts with other video frameworks
+- Applying custom themes or layouts
+
 ## API Reference
 
 ### `IPFSHLSPlayer.initializePlayer(element, options)`
@@ -129,6 +153,10 @@ Initialize a player on a video element.
   - `autoplay` (Boolean): Auto-start playback
   - `loop` (Boolean): Loop playback
   - `muted` (Boolean): Start muted
+  - `cssClasses` (Object): CSS class configuration
+    - `required` (Array): Classes always applied
+    - `optional` (Array): Default classes (can be overridden)
+    - `custom` (Array): Additional custom classes
 
 **Returns:** Video.js player instance
 
@@ -212,6 +240,24 @@ src: 'https://ipfs.dlux.io/ipfs/QmPlaylistCID'
 - Edge 79+
 - iOS Safari 11+
 - Chrome for Android
+
+## Troubleshooting
+
+### CORS Errors
+Ensure your IPFS gateway supports CORS headers for cross-origin playback. Most public gateways handle this correctly, but local nodes may need configuration.
+
+### Mixed Content Warnings
+If your site uses HTTPS, ensure all IPFS gateway URLs also use HTTPS. Browsers block HTTP content on HTTPS pages.
+
+### Player Not Initializing
+- Check browser console for errors
+- Verify Video.js CSS is loading (the player includes automatic fallback CDN loading)
+- Ensure the video element exists in DOM before calling `initializePlayer`
+
+### HLS Playback Issues
+- Verify the M3U8 playlist uses absolute IPFS URLs (not relative paths)
+- Check that all segment files are accessible via the gateway
+- Test the playlist URL directly in the browser
 
 ## Development
 
