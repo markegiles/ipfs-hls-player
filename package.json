@@ -1,6 +1,6 @@
 {
   "name": "ipfs-hls-player",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Video.js-based HLS player optimized for IPFS content-addressed storage",
   "main": "dist/ipfs-hls-player.js",
   "module": "dist/ipfs-hls-player.esm.js",

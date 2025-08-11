@@ -74063,7 +74063,7 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
               }
 
               // Apply Video.js classes for consistent styling
-              this.applyVideoJSClasses(element);
+              this.applyVideoJSClasses(element, options);
 
               // Ensure video has proper wrapper structure
               this.ensureVideoWrapper(element);
@@ -74202,7 +74202,7 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
             case 2:
               _context2.p = 2;
               // Apply Video.js classes and ensure wrapper
-              this.applyVideoJSClasses(video);
+              this.applyVideoJSClasses(video, options);
               this.ensureVideoWrapper(video);
 
               // Extract options from video element
@@ -74270,35 +74270,43 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
     /**
      * Apply required Video.js CSS classes to video element
      * @param {HTMLVideoElement} video - Video element
+     * @param {Object} options - Configuration options
      */
   }, {
     key: "applyVideoJSClasses",
     value: function applyVideoJSClasses(video) {
-      // Ensure video element has the essential Video.js classes
-      var requiredClasses = ['video-js', 'vjs-default-skin'];
-      var optionalClasses = ['vjs-big-play-centered', 'vjs-fluid'];
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      // Merge with defaults
+      var config = _objectSpread({
+        required: ['video-js', 'vjs-default-skin'],
+        optional: ['vjs-big-play-centered', 'vjs-fluid'],
+        custom: []
+      }, options.cssClasses || {});
 
       // Add required classes
-      requiredClasses.forEach(function (className) {
+      config.required.forEach(function (className) {
         if (!video.classList.contains(className)) {
           video.classList.add(className);
         }
       });
 
-      // Add optional classes if not explicitly configured otherwise
-      optionalClasses.forEach(function (className) {
-        if (!video.classList.contains(className) && !video.hasAttribute('data-no-' + className.replace('vjs-', ''))) {
+      // Add optional classes
+      config.optional.forEach(function (className) {
+        if (!video.classList.contains(className)) {
           video.classList.add(className);
         }
       });
 
-      // Ensure video is properly styled for Video.js
-      if (!video.style.width && !video.hasAttribute('width')) {
-        video.style.width = '100%';
+      // Add custom classes
+      if (config.custom && config.custom.length > 0) {
+        config.custom.forEach(function (className) {
+          if (!video.classList.contains(className)) {
+            video.classList.add(className);
+          }
+        });
       }
-      if (!video.style.height && !video.hasAttribute('height')) {
-        video.style.height = 'auto';
-      }
+
+      // No forced inline styles - let CSS handle sizing
     }
 
     /**
@@ -74325,8 +74333,6 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
         // Create universal wrapper for standalone videos
         var wrapper = document.createElement('div');
         wrapper.className = 'ipfs-video-container ipfs-hls-player';
-        wrapper.style.position = 'relative';
-        wrapper.style.width = '100%';
 
         // Safely insert wrapper before video and move video inside
         var parent = video.parentNode;
