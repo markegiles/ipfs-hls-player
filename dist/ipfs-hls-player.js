@@ -74029,16 +74029,16 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
@@ -74070,38 +74070,260 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
     _classCallCheck(this, IPFSHLSPlayer);
   }
   return _createClass(IPFSHLSPlayer, null, [{
-    key: "initializePlayer",
+    key: "isIPFSURL",
+    value:
+    /**
+     * Check if URL is an IPFS URL
+     * @param {string} url - URL to check
+     * @returns {boolean} True if IPFS URL
+     */
+    function isIPFSURL(url) {
+      if (!url) return false;
+      return url.includes('/ipfs/') || url.includes('ipfs.io') || url.includes('ipfs.dlux.io') || url.includes('gateway.pinata.cloud') || url.includes('dweb.link') || url.includes('cf-ipfs.com') || url.includes('cloudflare-ipfs.com');
+    }
+
+    /**
+     * MIME type normalization map
+     * Maps various MIME type variants to Video.js-compatible types
+     */
+  }, {
+    key: "detectFromContent",
     value: (
+    /**
+     * Detect MIME type from file content (magic bytes and text signatures)
+     * @param {string} url - URL to check
+     * @returns {Promise<string|null>} MIME type or null
+     */
+    function () {
+      var _detectFromContent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(url) {
+        var config, response, buffer, bytes, text, brand, contentType, mimeType, normalized, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              config = window.ipfsHLSPlayerConfig || {};
+              _context.p = 1;
+              _context.n = 2;
+              return fetch(url, {
+                headers: {
+                  'Range': 'bytes=0-200'
+                },
+                mode: 'cors'
+              });
+            case 2:
+              response = _context.v;
+              _context.n = 3;
+              return response.arrayBuffer();
+            case 3:
+              buffer = _context.v;
+              bytes = new Uint8Array(buffer); // Check for HLS (text-based, starts with #EXTM3U)
+              if (!(bytes[0] === 0x23)) {
+                _context.n = 4;
+                break;
+              }
+              // '#' character
+              text = new TextDecoder().decode(bytes);
+              if (!text.startsWith('#EXTM3U')) {
+                _context.n = 4;
+                break;
+              }
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Detected HLS playlist');
+              }
+              return _context.a(2, 'application/x-mpegURL');
+            case 4:
+              if (!(bytes.length > 7 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70)) {
+                _context.n = 5;
+                break;
+              }
+              // Extract brand for debugging
+              if (config.debug && bytes.length > 11) {
+                brand = String.fromCharCode(bytes[8], bytes[9], bytes[10], bytes[11]).replace(/\0/g, ' ').trim();
+                console.log("IPFSHLSPlayer: Detected MP4-compatible with brand: ".concat(brand));
+              }
+              return _context.a(2, 'video/mp4');
+            case 5:
+              if (!(bytes.length > 3 && bytes[0] === 0x1A && bytes[1] === 0x45 && bytes[2] === 0xDF && bytes[3] === 0xA3)) {
+                _context.n = 6;
+                break;
+              }
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Detected WebM/Matroska');
+              }
+              return _context.a(2, 'video/webm');
+            case 6:
+              if (!(bytes.length > 3 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53)) {
+                _context.n = 7;
+                break;
+              }
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Detected Ogg');
+              }
+              return _context.a(2, 'video/ogg');
+            case 7:
+              if (!(bytes.length > 11 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x41 && bytes[9] === 0x56 && bytes[10] === 0x49 && bytes[11] === 0x20)) {
+                _context.n = 8;
+                break;
+              }
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Detected AVI');
+              }
+              return _context.a(2, 'video/x-msvideo');
+            case 8:
+              if (!(bytes[0] === 0x47)) {
+                _context.n = 10;
+                break;
+              }
+              if (!(bytes.length > 188 && bytes[188] === 0x47)) {
+                _context.n = 9;
+                break;
+              }
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Detected MPEG-TS (confirmed by sync pattern)');
+              }
+              return _context.a(2, 'video/mp2t');
+            case 9:
+              // Single sync byte might still be TS
+              if (config.debug) {
+                console.log('IPFSHLSPlayer: Possible MPEG-TS (single sync byte)');
+              }
+              return _context.a(2, 'video/mp2t');
+            case 10:
+              // Fallback: Check Content-Type header
+              contentType = response.headers.get('content-type');
+              if (!contentType) {
+                _context.n = 11;
+                break;
+              }
+              mimeType = contentType.split(';')[0].trim();
+              normalized = this.MIME_NORMALIZATION[mimeType];
+              if (config.debug) {
+                if (normalized && normalized !== mimeType) {
+                  console.log("IPFSHLSPlayer: Normalized ".concat(mimeType, " to ").concat(normalized));
+                }
+              }
+              return _context.a(2, normalized || mimeType);
+            case 11:
+              _context.n = 13;
+              break;
+            case 12:
+              _context.p = 12;
+              _t = _context.v;
+              if (config.debug) {
+                console.warn('IPFSHLSPlayer: Content detection failed:', _t);
+              }
+            case 13:
+              return _context.a(2, null);
+          }
+        }, _callee, this, [[1, 12]]);
+      }));
+      function detectFromContent(_x) {
+        return _detectFromContent.apply(this, arguments);
+      }
+      return detectFromContent;
+    }()
+    /**
+     * Register Video.js middleware for IPFS MIME type detection
+     * Must be called before creating any players
+     */
+    )
+  }, {
+    key: "registerIPFSMiddleware",
+    value: function registerIPFSMiddleware() {
+      // Check if middleware already registered
+      if (this._middlewareRegistered) return;
+      var self = this;
+      var config = window.ipfsHLSPlayerConfig || {};
+
+      // Register middleware for all sources
+      video_es["default"].use('*', function () {
+        return {
+          setSource: function setSource(srcObj, next) {
+            return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+              var type, _t2;
+              return _regenerator().w(function (_context2) {
+                while (1) switch (_context2.p = _context2.n) {
+                  case 0:
+                    if (!(self.isIPFSURL(srcObj.src) && !srcObj.type)) {
+                      _context2.n = 4;
+                      break;
+                    }
+                    if (config.debug) {
+                      console.log('IPFSHLSPlayer: Detecting MIME type for IPFS URL:', srcObj.src);
+                    }
+                    _context2.p = 1;
+                    _context2.n = 2;
+                    return self.detectFromContent(srcObj.src);
+                  case 2:
+                    type = _context2.v;
+                    if (config.debug) {
+                      console.log('IPFSHLSPlayer: Final MIME type:', type || 'unknown (using fallback)');
+                    }
+
+                    // Pass modified source with detected type
+                    return _context2.a(2, next(null, {
+                      src: srcObj.src,
+                      type: type || 'video/mp4' // Last resort fallback
+                    }));
+                  case 3:
+                    _context2.p = 3;
+                    _t2 = _context2.v;
+                    console.warn('IPFSHLSPlayer: MIME detection failed:', _t2);
+                    // On error, proceed with fallback type
+                    return _context2.a(2, next(null, {
+                      src: srcObj.src,
+                      type: 'video/mp4'
+                    }));
+                  case 4:
+                    return _context2.a(2, next(null, srcObj));
+                }
+              }, _callee2, null, [[1, 3]]);
+            }))();
+          }
+        };
+      });
+      this._middlewareRegistered = true;
+      if (config.debug) {
+        console.log('IPFSHLSPlayer: Middleware registered for IPFS MIME type detection');
+      }
+    }
     /**
      * Initialize a Video.js player with IPFS-optimized settings
      * @param {HTMLVideoElement} element - Video element to enhance
      * @param {Object} options - Player configuration options
      * @returns {Promise<Player>} Video.js player instance
      */
-    function () {
-      var _initializePlayer = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(element) {
+  }, {
+    key: "initializePlayer",
+    value: (function () {
+      var _initializePlayer = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(element) {
         var options,
           config,
           defaultOptions,
           playerOptions,
           player,
           sourceType,
-          _args = arguments;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
+          sourceConfig,
+          _config,
+          _args3 = arguments;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.n) {
             case 0:
-              options = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
+              options = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : {};
+              // Register middleware on first initialization
+              this.registerIPFSMiddleware();
+
+              // Prevent double initialization
               if (!(element._ipfsHLSPlayer || element.dataset.ipfsEnhanced === 'true')) {
-                _context.n = 1;
+                _context3.n = 1;
                 break;
               }
               config = window.ipfsHLSPlayerConfig || {};
               if (config.debug) {
                 console.log('IPFSHLSPlayer: Video already enhanced, skipping duplicate initialization for:', element.id || 'no-id');
               }
-              return _context.a(2, element._ipfsHLSPlayer);
+              return _context3.a(2, element._ipfsHLSPlayer);
             case 1:
-              _context.n = 2;
+              _context3.n = 2;
               return _ensureVideoJSStyles();
             case 2:
               // Ensure element has an ID for Video.js
@@ -74133,25 +74355,51 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
                 }
               }; // Merge options
               playerOptions = _objectSpread(_objectSpread({}, defaultOptions), options); // Initialize Video.js
-              player = (0,video_es["default"])(element, playerOptions); // Set source if provided
+              player = (0,video_es["default"])(element, playerOptions); // Always initialize quality levels so it can track them as they load
+              player.qualityLevels();
+
+              // Set source if provided
               if (options.src) {
-                sourceType = options.type || this.detectSourceType(options.src);
-                player.src({
-                  src: options.src,
-                  type: sourceType
-                });
+                sourceType = options.type || this.detectSourceType(options.src); // Build source config
+                sourceConfig = {
+                  src: options.src
+                }; // Add type if we have one (middleware will handle IPFS URLs without type)
+                if (sourceType) {
+                  sourceConfig.type = sourceType;
+                }
+
+                // Pass to Video.js - middleware will intercept if needed
+                player.src(sourceConfig);
 
                 // Add HLS quality selector if it's HLS content
                 if (sourceType === 'application/x-mpegURL' || options.src.includes('.m3u8')) {
-                  player.ready(function () {
-                    // Initialize quality levels
-                    player.qualityLevels();
+                  // We know it's HLS from the start
+                  player.hlsQualitySelector({
+                    displayCurrentQuality: true,
+                    placementIndex: 2
+                  });
+                  _config = window.ipfsHLSPlayerConfig || {};
+                  if (_config.debug) {
+                    console.log('IPFSHLSPlayer: Added HLS quality selector for known HLS content');
+                  }
+                } else {
+                  // For unknown types (like IPFS URLs), check as soon as the source type is determined
+                  // Use loadstart which fires earlier than loadedmetadata
+                  player.one('loadstart', function () {
+                    var actualType = player.currentType();
 
-                    // Add quality selector to control bar
-                    player.hlsQualitySelector({
-                      displayCurrentQuality: true,
-                      placementIndex: 2
-                    });
+                    // Check if it's HLS content detected by middleware
+                    if (actualType === 'application/x-mpegURL' || actualType === 'application/vnd.apple.mpegurl') {
+                      // Add quality selector immediately - quality levels haven't loaded yet
+                      player.hlsQualitySelector({
+                        displayCurrentQuality: true,
+                        placementIndex: 2
+                      });
+                      var _config2 = window.ipfsHLSPlayerConfig || {};
+                      if (_config2.debug) {
+                        console.log('IPFSHLSPlayer: Added HLS quality selector after type detection:', actualType);
+                      }
+                    }
                   });
                 }
               }
@@ -74166,11 +74414,11 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
 
               // Mark as enhanced to prevent double initialization
               element.dataset.ipfsEnhanced = 'true';
-              return _context.a(2, player);
+              return _context3.a(2, player);
           }
-        }, _callee, this);
+        }, _callee3, this);
       }));
-      function initializePlayer(_x) {
+      function initializePlayer(_x2) {
         return _initializePlayer.apply(this, arguments);
       }
       return initializePlayer;
@@ -74195,18 +74443,18 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
     /**
      * Detect video source type from URL
      * @param {string} src - Video source URL
-     * @returns {string} MIME type
+     * @returns {string|null} MIME type or null if unknown
      */
   }, {
     key: "detectSourceType",
     value: function detectSourceType(src) {
-      if (!src) return 'video/mp4';
+      if (!src) return null;
       var srcLower = src.toLowerCase();
       if (srcLower.includes('.m3u8')) return 'application/x-mpegURL';
       if (srcLower.includes('.mp4')) return 'video/mp4';
       if (srcLower.includes('.webm')) return 'video/webm';
       if (srcLower.includes('.ogg') || srcLower.includes('.ogv')) return 'video/ogg';
-      return 'video/mp4'; // Default
+      return null; // Let browser detect type
     }
 
     /**
@@ -74218,36 +74466,36 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
   }, {
     key: "enhanceVideoElement",
     value: (function () {
-      var _enhanceVideoElement = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(video) {
+      var _enhanceVideoElement = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(video) {
         var options,
           state,
           config,
           elementOptions,
           player,
-          _args2 = arguments,
-          _t;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.p = _context2.n) {
+          _args4 = arguments,
+          _t3;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
             case 0:
-              options = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : {};
+              options = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : {};
               if (this.isVideoReady(video)) {
-                _context2.n = 1;
+                _context4.n = 1;
                 break;
               }
               state = this.getVideoState(video);
               throw new Error("Video not ready for enhancement: ".concat(JSON.stringify(state)));
             case 1:
               if (!(video.dataset.ipfsEnhanced === 'true')) {
-                _context2.n = 2;
+                _context4.n = 2;
                 break;
               }
               config = window.ipfsHLSPlayerConfig || {};
               if (config.debug) {
                 console.log('IPFSHLSPlayer: Video already enhanced, returning existing player:', video.id || 'no-id');
               }
-              return _context2.a(2, video._ipfsHLSPlayer);
+              return _context4.a(2, video._ipfsHLSPlayer);
             case 2:
-              _context2.p = 2;
+              _context4.p = 2;
               // Apply Video.js classes and ensure wrapper
               this.applyVideoJSClasses(video, options);
               this.ensureVideoWrapper(video);
@@ -74261,24 +74509,24 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
                 loop: video.loop,
                 muted: video.muted
               }, options); // Initialize player
-              _context2.n = 3;
+              _context4.n = 3;
               return this.initializePlayer(video, elementOptions);
             case 3:
-              player = _context2.v;
+              player = _context4.v;
               // Mark as enhanced
               video.dataset.ipfsEnhanced = 'true';
-              return _context2.a(2, player);
+              return _context4.a(2, player);
             case 4:
-              _context2.p = 4;
-              _t = _context2.v;
-              console.error('IPFSHLSPlayer: Enhancement failed for video:', video.id || 'no-id', _t);
-              throw _t;
+              _context4.p = 4;
+              _t3 = _context4.v;
+              console.error('IPFSHLSPlayer: Enhancement failed for video:', video.id || 'no-id', _t3);
+              throw _t3;
             case 5:
-              return _context2.a(2);
+              return _context4.a(2);
           }
-        }, _callee2, this, [[2, 4]]);
+        }, _callee4, this, [[2, 4]]);
       }));
-      function enhanceVideoElement(_x2) {
+      function enhanceVideoElement(_x3) {
         return _enhanceVideoElement.apply(this, arguments);
       }
       return enhanceVideoElement;
@@ -74404,7 +74652,7 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
   }, {
     key: "enhanceStaticVideos",
     value: (function () {
-      var _enhanceStaticVideos = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var _enhanceStaticVideos = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         var container,
           config,
           videos,
@@ -74413,13 +74661,13 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
           _step,
           video,
           player,
-          _args3 = arguments,
-          _t2,
-          _t3;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.p = _context3.n) {
+          _args5 = arguments,
+          _t4,
+          _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
             case 0:
-              container = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : document;
+              container = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : document;
               config = window.ipfsHLSPlayerConfig || {};
               videos = container.querySelectorAll('video:not([data-ipfs-enhanced])');
               players = [];
@@ -74427,47 +74675,47 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
                 console.log("IPFSHLSPlayer: Found ".concat(videos.length, " static videos to enhance"));
               }
               _iterator = _createForOfIteratorHelper(videos);
-              _context3.p = 1;
+              _context5.p = 1;
               _iterator.s();
             case 2:
               if ((_step = _iterator.n()).done) {
-                _context3.n = 7;
+                _context5.n = 7;
                 break;
               }
               video = _step.value;
-              _context3.p = 3;
-              _context3.n = 4;
+              _context5.p = 3;
+              _context5.n = 4;
               return this.enhanceVideoElement(video);
             case 4:
-              player = _context3.v;
+              player = _context5.v;
               players.push(player);
               if (config.debug) {
                 console.log('IPFSHLSPlayer: Successfully enhanced static video:', video.id || 'no-id');
               }
-              _context3.n = 6;
+              _context5.n = 6;
               break;
             case 5:
-              _context3.p = 5;
-              _t2 = _context3.v;
-              console.error('Failed to enhance static video:', _t2);
+              _context5.p = 5;
+              _t4 = _context5.v;
+              console.error('Failed to enhance static video:', _t4);
             case 6:
-              _context3.n = 2;
+              _context5.n = 2;
               break;
             case 7:
-              _context3.n = 9;
+              _context5.n = 9;
               break;
             case 8:
-              _context3.p = 8;
-              _t3 = _context3.v;
-              _iterator.e(_t3);
+              _context5.p = 8;
+              _t5 = _context5.v;
+              _iterator.e(_t5);
             case 9:
-              _context3.p = 9;
+              _context5.p = 9;
               _iterator.f();
-              return _context3.f(9);
+              return _context5.f(9);
             case 10:
-              return _context3.a(2, players);
+              return _context5.a(2, players);
           }
-        }, _callee3, this, [[3, 5], [1, 8, 9, 10]]);
+        }, _callee5, this, [[3, 5], [1, 8, 9, 10]]);
       }));
       function enhanceStaticVideos() {
         return _enhanceStaticVideos.apply(this, arguments);
@@ -74482,13 +74730,13 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
   }, {
     key: "ensureVideoJSStyles",
     value: (function () {
-      var _ensureVideoJSStyles2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.n) {
+      var _ensureVideoJSStyles2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.n) {
             case 0:
-              return _context4.a(2, _ensureVideoJSStyles());
+              return _context6.a(2, _ensureVideoJSStyles());
           }
-        }, _callee4);
+        }, _callee6);
       }));
       function ensureVideoJSStyles() {
         return _ensureVideoJSStyles2.apply(this, arguments);
@@ -74501,6 +74749,36 @@ var IPFSHLSPlayer = /*#__PURE__*/function () {
  * Ensure Video.js CSS is loaded - enhanced fallback system for universal support
  * @returns {Promise} Resolves when CSS is ready
  */
+_defineProperty(IPFSHLSPlayer, "MIME_NORMALIZATION", {
+  // QuickTime/MOV → MP4 (same container)
+  'video/quicktime': 'video/mp4',
+  'video/x-quicktime': 'video/mp4',
+  // MP4 variants
+  'video/x-m4v': 'video/mp4',
+  'video/3gpp': 'video/mp4',
+  'video/3gpp2': 'video/mp4',
+  'video/mp4v-es': 'video/mp4',
+  // WebM variants
+  'video/x-webm': 'video/webm',
+  // HLS variants
+  'application/vnd.apple.mpegurl': 'application/x-mpegURL',
+  'audio/mpegurl': 'application/x-mpegURL',
+  'audio/x-mpegurl': 'application/x-mpegURL',
+  // AVI variants
+  'video/avi': 'video/x-msvideo',
+  'video/msvideo': 'video/x-msvideo',
+  'video/x-avi': 'video/x-msvideo',
+  // MPEG variants
+  'video/mpeg': 'video/mp2t',
+  'video/x-mpeg': 'video/mp2t',
+  // Keep standard types as-is
+  'video/mp4': 'video/mp4',
+  'video/webm': 'video/webm',
+  'video/ogg': 'video/ogg',
+  'video/x-msvideo': 'video/x-msvideo',
+  'video/mp2t': 'video/mp2t',
+  'application/x-mpegURL': 'application/x-mpegURL'
+});
 function _ensureVideoJSStyles() {
   var config = window.ipfsHLSPlayerConfig || {};
   return new Promise(function (resolve) {
@@ -74608,12 +74886,12 @@ if (typeof window !== 'undefined') {
   // Static enhancement for documentation and non-framework contexts
   var config = window.ipfsHLSPlayerConfig || {};
   if (config.enableStaticEnhancement !== false) {
-    document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-      var isFrameworkApp, _t4;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
+    document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+      var isFrameworkApp, _t6;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
           case 0:
-            _context5.p = 0;
+            _context7.p = 0;
             if (config.debug) {
               console.log('IPFSHLSPlayer: Starting static page enhancement');
             }
@@ -74621,29 +74899,29 @@ if (typeof window !== 'undefined') {
             // Only enhance if not in a Vue/React app context
             isFrameworkApp = document.querySelector('[data-vue-app], [data-react-app], .react-app');
             if (isFrameworkApp) {
-              _context5.n = 2;
+              _context7.n = 2;
               break;
             }
-            _context5.n = 1;
+            _context7.n = 1;
             return IPFSHLSPlayer.enhanceStaticVideos();
           case 1:
-            _context5.n = 3;
+            _context7.n = 3;
             break;
           case 2:
             if (config.debug) {
               console.log('IPFSHLSPlayer: Framework app detected, skipping static enhancement');
             }
           case 3:
-            _context5.n = 5;
+            _context7.n = 5;
             break;
           case 4:
-            _context5.p = 4;
-            _t4 = _context5.v;
-            console.error('Static video enhancement failed:', _t4);
+            _context7.p = 4;
+            _t6 = _context7.v;
+            console.error('Static video enhancement failed:', _t6);
           case 5:
-            return _context5.a(2);
+            return _context7.a(2);
         }
-      }, _callee5, null, [[0, 4]]);
+      }, _callee7, null, [[0, 4]]);
     })));
   }
 }

@@ -36,6 +36,7 @@ This player is optimized to play these IPFS-hosted HLS streams.
 - **Quality Selection UI**: Built-in adaptive bitrate controls
 - **Automatic Enhancement**: Finds and upgrades video elements on the page
 - **IPFS Gateway Optimization**: Tuned for distributed gateway performance
+- **Intelligent Type Detection**: Handles IPFS CIDs and various video formats without assumptions
 
 ## Features
 
@@ -138,6 +139,51 @@ This is useful when:
 - Preventing conflicts with other video frameworks
 - Applying custom themes or layouts
 
+### Intelligent MIME Type Detection
+
+The player includes advanced type detection specifically designed for IPFS content where file extensions are not available:
+
+#### Magic Byte Detection
+For IPFS CIDs without file extensions, the player uses **magic byte detection** - the industry standard method for identifying file types:
+
+1. **Fetches first 200 bytes** of the content using a Range request (efficient)
+2. **Checks magic bytes** to identify the format:
+   - `#EXTM3U` → HLS playlist (`application/x-mpegURL`)
+   - `ftyp` box → MP4/MOV/QuickTime (`video/mp4`)
+   - EBML header → WebM/Matroska (`video/webm`)
+   - `OggS` → Ogg/Ogv (`video/ogg`)
+   - And more formats...
+
+3. **Falls back to Content-Type** header if magic bytes don't match
+4. **Normalizes MIME types** (e.g., `video/quicktime` → `video/mp4`)
+
+#### Video.js Middleware Integration
+The player uses Video.js middleware to transparently handle IPFS URLs:
+
+```javascript
+// Automatically detects type for IPFS URLs
+IPFSHLSPlayer.initializePlayer(video, {
+  src: 'https://ipfs.io/ipfs/QmYourCID'  // No type needed!
+});
+```
+
+The middleware:
+- Only processes IPFS URLs without an explicit type
+- Runs magic byte detection asynchronously
+- Provides the detected type to Video.js
+- Falls back to `video/mp4` if detection fails
+
+#### Manual Type Override
+You can still manually specify types for faster initialization:
+```javascript
+IPFSHLSPlayer.initializePlayer(video, {
+  src: 'https://ipfs.io/ipfs/QmYourHLSPlaylist',
+  type: 'application/x-mpegURL'  // Skip detection for known HLS
+});
+```
+
+This intelligent detection ensures all video formats work correctly with IPFS, not just MP4.
+
 ## API Reference
 
 ### `IPFSHLSPlayer.initializePlayer(element, options)`
@@ -148,7 +194,7 @@ Initialize a player on a video element.
 - `element` (HTMLVideoElement): Video element to enhance
 - `options` (Object): Player configuration
   - `src` (String): Video source URL
-  - `type` (String): MIME type (auto-detected if not provided)
+  - `type` (String): MIME type (optional - intelligently auto-detected based on URL)
   - `poster` (String): Poster image URL
   - `autoplay` (Boolean): Auto-start playback
   - `loop` (Boolean): Loop playback
@@ -232,14 +278,65 @@ src: 'http://localhost:8080/ipfs/QmPlaylistCID'
 src: 'https://ipfs.dlux.io/ipfs/QmPlaylistCID'
 ```
 
+## HLS Quality Selector
+
+The player includes an optimized quality selector for HLS streams with proper timing to ensure all quality levels are detected:
+
+### How It Works
+1. **For .m3u8 URLs**: Quality selector initializes immediately
+2. **For IPFS CIDs**: 
+   - Waits for the `loadstart` event (after type detection)
+   - Checks if content is HLS
+   - Initializes selector before manifest loads
+   - Ensures all quality levels are tracked
+
+### Quality Levels Display
+- Shows all available resolutions (1080p, 720p, 480p, etc.)
+- Allows manual quality selection
+- Displays current quality
+- Only appears for HLS content (hidden for MP4s)
+
+### Timing Optimization
+The player uses the `loadstart` event for perfect timing:
+- Fires after middleware detects content type
+- Occurs before HLS manifest loads
+- Ensures quality selector catches all levels as they're added
+- Prevents empty quality dropdowns
+
 ## Browser Support
 
 - Chrome 60+
 - Firefox 55+
-- Safari 11+
+- Safari 11+ (⚠️ HLS not supported - see Safari Limitations below)
 - Edge 79+
-- iOS Safari 11+
+- iOS Safari 11+ (⚠️ HLS not supported, limited MSE support)
 - Chrome for Android
+
+### Safari Limitations
+
+**Important**: Video.js 8.x HLS playback is **incompatible with Safari**. This is a known Video.js issue, not specific to this player.
+
+#### What Works in Safari
+- ✅ MP4 videos (with type detection)
+- ✅ WebM videos (if Safari supports the codec)
+- ✅ Other standard video formats
+- ✅ All non-HLS features of the player
+
+#### What Doesn't Work
+- ❌ HLS streams (.m3u8) via Video.js
+- ❌ Quality selector for HLS
+- ❌ Any Video.js HLS features
+
+#### Safari HLS Options
+If you need HLS in Safari, consider these alternatives:
+
+1. **Use MP4/WebM formats instead** - Best compatibility
+2. **Native HTML5 video** - Safari's native HLS works but lacks Video.js features
+3. **Wait for Video.js 9.x** - Future versions may fix Safari compatibility
+4. **Alternative players** - Some players like Shaka Player may work differently with Safari
+
+#### Technical Background
+Video.js 8.x attempts to override Safari's native HLS support to provide consistent cross-browser behavior, but this override is broken. The VHS (Video.js HTTP Streaming) engine has fundamental incompatibilities with Safari's media handling.
 
 ## Troubleshooting
 
@@ -258,6 +355,33 @@ If your site uses HTTPS, ensure all IPFS gateway URLs also use HTTPS. Browsers b
 - Verify the M3U8 playlist uses absolute IPFS URLs (not relative paths)
 - Check that all segment files are accessible via the gateway
 - Test the playlist URL directly in the browser
+
+### Type Detection Issues
+If videos fail to play with IPFS CIDs:
+- Check the Content-Type headers from your IPFS gateway using browser dev tools
+- Try manually specifying the type parameter
+- Ensure your gateway properly sets Content-Type headers for video files
+- For HLS streams without .m3u8 extension, always specify `type: 'application/x-mpegURL'`
+
+### Safari HLS Incompatibility
+**HLS streams do not work in Safari with Video.js 8.x** - This is a known limitation.
+
+If you encounter HLS playback issues in Safari:
+- This is expected behavior - Video.js HLS is incompatible with Safari
+- Use MP4 or WebM formats for Safari compatibility
+- See the [Safari Limitations](#safari-limitations) section for alternatives
+- Test in Chrome or Firefox to verify your HLS stream works correctly
+
+### "Player Already Initialized" Warning
+When reusing video elements:
+```javascript
+// Clean up existing player first
+if (video._ipfsHLSPlayer) {
+  IPFSHLSPlayer.destroyPlayer(video);
+}
+// Now safe to initialize new player
+const player = IPFSHLSPlayer.initializePlayer(video, options);
+```
 
 ## Development
 
