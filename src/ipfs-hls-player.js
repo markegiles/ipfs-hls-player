@@ -89,14 +89,37 @@ class IPFSHLSPlayer {
     const config = window.ipfsHLSPlayerConfig || {};
     
     try {
-      // Fetch first 200 bytes (enough for all formats including MPEG-TS)
-      const response = await fetch(url, {
+      console.log('IPFSHLSPlayer: Starting type detection for:', url);
+      
+      // Try Range request first (most efficient)
+      console.log('IPFSHLSPlayer: Attempting Range request...');
+      let response = await fetch(url, {
         headers: { 'Range': 'bytes=0-200' },
         mode: 'cors'
       });
+      console.log('IPFSHLSPlayer: Range request completed, status:', response.status);
       
-      const buffer = await response.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
+      // If Range not supported (416) or other error, try without Range
+      if (response.status === 416 || !response.ok) {
+        if (config.debug) {
+          console.log('IPFSHLSPlayer: Range request failed, trying regular fetch');
+        }
+        response = await fetch(url, { mode: 'cors' });
+      }
+      
+      // Read only what we need (up to 200 bytes)
+      let bytes;
+      if (response.headers.get('content-range')) {
+        // Range request succeeded
+        const buffer = await response.arrayBuffer();
+        bytes = new Uint8Array(buffer);
+      } else {
+        // Regular fetch - read only first 200 bytes
+        const reader = response.body.getReader();
+        const { value } = await reader.read();
+        await reader.cancel(); // Stop reading more
+        bytes = new Uint8Array(value).slice(0, 200);
+      }
       
       // Check for HLS (text-based, starts with #EXTM3U)
       if (bytes[0] === 0x23) { // '#' character
@@ -183,9 +206,8 @@ class IPFSHLSPlayer {
       }
       
     } catch (error) {
-      if (config.debug) {
-        console.warn('IPFSHLSPlayer: Content detection failed:', error);
-      }
+      console.error('IPFSHLSPlayer: Content detection failed:', error, 'for URL:', url);
+      // Return null - don't guess!
     }
     
     return null;
@@ -248,14 +270,158 @@ class IPFSHLSPlayer {
       console.log('IPFSHLSPlayer: Middleware registered for IPFS MIME type detection');
     }
   }
+
+  /**
+   * Capability Detection System
+   * Detect browser capabilities to determine the best playback strategy
+   */
+  
+  // Cache capabilities to avoid repeated detection
+  static capabilities = null;
+  
+  /**
+   * Detect all relevant browser capabilities
+   * @returns {Object} Browser capabilities
+   */
+  static detectCapabilities() {
+    if (this.capabilities) return this.capabilities;
+    
+    this.capabilities = {
+      hasNativeHLS: this.hasNativeHLSSupport(),
+      hasMSE: this.hasMSESupport(), 
+      canOverrideNativeHLS: this.canOverrideNativeHLS(),
+      supportsAbsoluteURLsInHLS: this.supportsAbsoluteURLsInHLS()
+    };
+    
+    const config = window.ipfsHLSPlayerConfig || {};
+    if (config.debug) {
+      console.log('IPFSHLSPlayer: Detected capabilities:', this.capabilities);
+    }
+    
+    return this.capabilities;
+  }
+  
+  /**
+   * Check if browser has native HLS support
+   * @returns {boolean} True if native HLS is supported
+   */
+  static hasNativeHLSSupport() {
+    const video = document.createElement('video');
+    const canPlayHLS = video.canPlayType('application/vnd.apple.mpegurl') !== '' ||
+                       video.canPlayType('application/x-mpegURL') !== '';
+    return canPlayHLS;
+  }
+  
+  /**
+   * Check if browser has MediaSource Extensions support
+   * @returns {boolean} True if MSE is supported
+   */
+  static hasMSESupport() {
+    return !!(window.MediaSource || window.WebKitMediaSource);
+  }
+  
+  /**
+   * Check if Video.js can successfully override native HLS
+   * Safari's native HLS cannot be properly overridden by Video.js
+   * @returns {boolean} True if override will work
+   */
+  static canOverrideNativeHLS() {
+    // If no native HLS, override isn't needed
+    if (!this.hasNativeHLSSupport()) return true;
+    
+    // If browser has both native HLS and MSE, it's likely Safari
+    // Safari's native HLS cannot be properly overridden by Video.js
+    // This is a known Video.js 8.x limitation
+    if (this.hasNativeHLSSupport() && this.hasMSESupport()) {
+      // Conservative approach: assume override won't work
+      // This catches Safari without browser sniffing
+      return false;
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Check if native HLS supports absolute URLs in playlists
+   * Required for IPFS HLS content with CID-based URLs
+   * @returns {boolean} True if absolute URLs are supported
+   */
+  static supportsAbsoluteURLsInHLS() {
+    // All known native HLS implementations support absolute URLs
+    // This could be tested more rigorously if edge cases are found
+    return this.hasNativeHLSSupport();
+  }
+  
+  /**
+   * Determine which player strategy to use based on capabilities
+   * @param {string} src - Source URL
+   * @param {string} type - MIME type (optional)
+   * @returns {string} 'native' or 'videojs'
+   */
+  static getPlayerStrategy(src, type) {
+    const caps = this.detectCapabilities();
+    const isHLS = this.isHLSContent(src, type);
+    
+    const config = window.ipfsHLSPlayerConfig || {};
+    
+    if (isHLS) {
+      // For HLS content, choose based on capabilities
+      if (caps.hasNativeHLS && !caps.canOverrideNativeHLS) {
+        // Has native HLS but Video.js can't override (Safari scenario)
+        if (config.debug) {
+          console.log('IPFSHLSPlayer: Using native HLS (Video.js override not possible)');
+        }
+        return 'native';
+      } else if (caps.hasMSE) {
+        // Has MSE, use Video.js HLS
+        if (config.debug) {
+          console.log('IPFSHLSPlayer: Using Video.js HLS (MSE available)');
+        }
+        return 'videojs';
+      } else if (caps.hasNativeHLS) {
+        // Fallback to native if available
+        if (config.debug) {
+          console.log('IPFSHLSPlayer: Using native HLS (no MSE)');
+        }
+        return 'native';
+      } else {
+        // No HLS support at all
+        console.warn('IPFSHLSPlayer: No HLS support detected');
+        return 'videojs'; // Try Video.js anyway
+      }
+    }
+    
+    // For non-HLS content, prefer Video.js if available
+    return caps.hasMSE ? 'videojs' : 'native';
+  }
+  
+  /**
+   * Check if content is HLS
+   * @param {string} src - Source URL
+   * @param {string} type - MIME type (optional)
+   * @returns {boolean} True if HLS content
+   */
+  static isHLSContent(src, type) {
+    if (!src) return false;
+    
+    // Check explicit type
+    if (type === 'application/x-mpegURL' || 
+        type === 'application/vnd.apple.mpegurl') {
+      return true;
+    }
+    
+    // Check URL patterns
+    return src.includes('.m3u8') || src.includes('/hls/');
+  }
+
   /**
    * Initialize a Video.js player with IPFS-optimized settings
    * @param {HTMLVideoElement} element - Video element to enhance
    * @param {Object} options - Player configuration options
-   * @returns {Promise<Player>} Video.js player instance
+   * @returns {Promise<Player>} Video.js player instance or native wrapper
    */
   static async initializePlayer(element, options = {}) {
-    // Register middleware on first initialization
+    // Register middleware on first initialization (for Video.js path)
     this.registerIPFSMiddleware();
     
     // Prevent double initialization
@@ -267,6 +433,268 @@ class IPFSHLSPlayer {
       return element._ipfsHLSPlayer;
     }
     
+    // Detect source type if not provided
+    let sourceType = options.type;
+    
+    // For IPFS URLs without a type, detect from content
+    if (!sourceType && options.src && this.isIPFSURL(options.src)) {
+      console.log('IPFSHLSPlayer: IPFS URL detected, need type detection for:', options.src);
+      
+      sourceType = await this.detectFromContent(options.src);
+      
+      console.log('IPFSHLSPlayer: Type detection complete, result:', sourceType);
+      
+      // Update options with detected type for downstream use
+      if (sourceType) {
+        options.type = sourceType;
+      }
+    }
+    
+    // Fall back to extension-based detection for non-IPFS URLs
+    if (!sourceType && options.src) {
+      sourceType = this.detectSourceType(options.src);
+    }
+    
+    // Determine which player to use based on capabilities
+    const strategy = this.getPlayerStrategy(options.src, sourceType);
+    
+    const config = window.ipfsHLSPlayerConfig || {};
+    if (config.debug) {
+      console.log('IPFSHLSPlayer: Player strategy:', strategy, 'for', options.src);
+    }
+    
+    // Route to appropriate player implementation
+    if (strategy === 'native') {
+      return this.initializeNativePlayer(element, options);
+    } else {
+      return this.initializeVideoJSPlayer(element, options);
+    }
+  }
+  
+  /**
+   * Initialize a native HTML5 player (for Safari HLS)
+   * @param {HTMLVideoElement} element - Video element to enhance
+   * @param {Object} options - Player configuration options
+   * @returns {Object} Native player wrapper with Video.js-compatible API
+   */
+  static initializeNativePlayer(element, options = {}) {
+    const config = window.ipfsHLSPlayerConfig || {};
+    
+    // Validate element is actually a video element
+    if (!element || element.tagName !== 'VIDEO') {
+      const error = `Element is not a valid video element: tagName=${element?.tagName}`;
+      if (config.debug) {
+        console.error('IPFSHLSPlayer:', error);
+      }
+      throw new Error(error);
+    }
+    
+    if (config.debug) {
+      console.log('IPFSHLSPlayer: Initializing native player for:', options.src);
+      console.log('IPFSHLSPlayer: Element state:', {
+        tagName: element.tagName,
+        id: element.id,
+        readyState: element.readyState,
+        networkState: element.networkState,
+        currentSrc: element.currentSrc,
+        canPlayType_HLS: (element.canPlayType ? element.canPlayType('application/vnd.apple.mpegurl') : 'canPlayType not available')
+      });
+    }
+    
+    // Ensure element has an ID
+    if (!element.id) {
+      element.id = `ipfs-video-${Math.random().toString(36).substr(2, 9)}`;
+    }
+    
+    // Configure native video element
+    element.controls = true;
+    
+    // Set default preload if not specified (important for Safari HLS)
+    element.preload = options.preload || 'metadata';
+    
+    if (config.debug) {
+      console.log('IPFSHLSPlayer: Set preload to:', element.preload);
+    }
+    
+    if (options.src) {
+      element.src = options.src;
+      
+      if (config.debug) {
+        console.log('IPFSHLSPlayer: Set src, element state now:', {
+          src: element.src,
+          readyState: element.readyState,
+          networkState: element.networkState
+        });
+      }
+      
+      // For HLS content in Safari, we need to explicitly trigger load
+      // This ensures Safari's HLS subsystem initializes properly
+      const isHLS = this.isHLSContent(options.src, options.type);
+      if (config.debug) {
+        console.log('IPFSHLSPlayer: Is HLS content?', isHLS, 'Type:', options.type);
+      }
+      
+      if (isHLS) {
+        // Defensive check to ensure element is still a video element
+        if (element && element.tagName === 'VIDEO' && typeof element.load === 'function') {
+          if (config.debug) {
+            console.log('IPFSHLSPlayer: Calling load() for HLS content');
+          }
+          element.load();
+          if (config.debug) {
+            console.log('IPFSHLSPlayer: After load(), element state:', {
+              readyState: element.readyState,
+              networkState: element.networkState,
+              error: element.error
+            });
+          }
+        } else {
+          if (config.debug) {
+            console.warn('IPFSHLSPlayer: Cannot call load() - element check failed');
+          }
+        }
+      }
+    }
+    // Safari doesn't use type attribute for native playback - it figures it out from the URL/content
+    
+    // Apply options
+    if (options.poster) element.poster = options.poster;
+    if (options.autoplay) element.autoplay = true;
+    if (options.muted) element.muted = true;
+    if (options.loop) element.loop = true;
+    
+    // Apply CSS for consistent styling
+    element.classList.add('video-js', 'vjs-default-skin');
+    
+    // Mark as enhanced
+    element.dataset.ipfsEnhanced = 'true';
+    
+    // Add debug event listeners if in debug mode
+    if (config.debug) {
+      const events = ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'error', 'stalled', 'waiting'];
+      events.forEach(eventName => {
+        element.addEventListener(eventName, (e) => {
+          console.log(`IPFSHLSPlayer: Native player event: ${eventName}`, {
+            readyState: element.readyState,
+            networkState: element.networkState,
+            currentTime: element.currentTime,
+            duration: element.duration,
+            error: element.error
+          });
+        });
+      });
+    }
+    
+    // Create wrapper with Video.js-compatible API
+    const wrapper = {
+      // Core methods
+      play: () => element.play(),
+      pause: () => element.pause(),
+      paused: () => element.paused,
+      currentTime: (time) => {
+        if (time !== undefined) element.currentTime = time;
+        return element.currentTime;
+      },
+      duration: () => element.duration,
+      volume: (vol) => {
+        if (vol !== undefined) element.volume = vol;
+        return element.volume;
+      },
+      muted: (mute) => {
+        if (mute !== undefined) element.muted = mute;
+        return element.muted;
+      },
+      
+      // Source management
+      src: (source) => {
+        if (source) {
+          element.src = typeof source === 'string' ? source : source.src;
+        }
+        return element.src;
+      },
+      currentSrc: () => element.currentSrc,
+      currentType: () => options.type || 'application/x-mpegURL',
+      
+      // Event handling
+      on: (event, handler) => element.addEventListener(event, handler),
+      off: (event, handler) => element.removeEventListener(event, handler),
+      one: (event, handler) => element.addEventListener(event, handler, { once: true }),
+      
+      // Lifecycle
+      ready: (callback) => {
+        if (element.readyState >= 1) {
+          callback();
+        } else {
+          element.addEventListener('loadedmetadata', callback, { once: true });
+        }
+      },
+      dispose: () => {
+        // Get fresh element reference by ID to avoid stale closure issues
+        const currentElement = element.id ? document.getElementById(element.id) : element;
+        
+        if (config.debug) {
+          console.log('IPFSHLSPlayer: Disposing native player, element check:', {
+            hasId: !!element.id,
+            foundById: !!currentElement,
+            tagName: currentElement?.tagName,
+            isSameElement: currentElement === element
+          });
+        }
+        
+        // Check if element is still a valid video element
+        if (currentElement && currentElement.tagName === 'VIDEO') {
+          currentElement.src = '';
+          if (typeof currentElement.load === 'function') {
+            currentElement.load();
+          }
+          delete currentElement._ipfsHLSPlayer;
+          currentElement.dataset.ipfsEnhanced = 'false';
+        } else if (config.debug) {
+          console.warn('IPFSHLSPlayer: Cannot dispose - element is not a valid VIDEO element');
+        }
+      },
+      
+      // Element access
+      el: () => element,
+      
+      // Control bar (mock for compatibility)
+      controlBar: {
+        getChild: () => null,
+        show: () => {},
+        hide: () => {}
+      },
+      
+      // Quality levels (mock for compatibility)
+      qualityLevels: () => ({
+        on: () => {},
+        off: () => {},
+        levels_: []
+      }),
+      
+      // Type identification
+      isNativePlayer: true,
+      
+      // Direct element access
+      element: element
+    };
+    
+    // Store reference
+    element._ipfsHLSPlayer = wrapper;
+    
+    if (config.debug) {
+      console.log('IPFSHLSPlayer: Native player initialized successfully');
+    }
+    
+    return wrapper;
+  }
+  
+  /**
+   * Initialize a Video.js player with IPFS-optimized settings
+   * @param {HTMLVideoElement} element - Video element to enhance
+   * @param {Object} options - Player configuration options
+   * @returns {Promise<Player>} Video.js player instance
+   */
+  static async initializeVideoJSPlayer(element, options = {}) {
     // Ensure Video.js CSS is loaded before creating player
     await ensureVideoJSStyles();
     
